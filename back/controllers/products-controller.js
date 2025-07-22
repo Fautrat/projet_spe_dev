@@ -1,6 +1,4 @@
-
-
-// const unitModel = require('../models/units.model');
+// const productModel = require('../models/products-model');
 
 
 module.exports.getProducts = async (req, res) => {
