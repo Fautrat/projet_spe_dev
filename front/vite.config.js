@@ -1,10 +1,13 @@
-// vite.config.js
+import { config } from 'dotenv';
+
+config();
+
 export default {
   server: {
-    port: 3000,
+    port: process.env.VITE_PORT,
   },
   build: {
     outDir: 'dist',
     emptyOutDir: true,
   },
-}
+};
