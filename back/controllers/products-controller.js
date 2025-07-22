@@ -15,6 +15,10 @@ module.exports.getProductByName = async (req, res) => {
     res.status(200).json({ message: "Routes working" });
 };
 
+module.exports.createProduct = async (req, res) => {
+    res.status(200).json({ message: "Routes working" });
+}
+
 
 module.exports.editProduct = async (req, res) => {
     res.status(200).json({ message: "Routes working" });
