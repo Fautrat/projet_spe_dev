@@ -2,17 +2,16 @@ CREATE DATABASE spe_dev;
 USE spe_dev;
 
 CREATE TABLE products (
-    identifiant INT AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     libelle VARCHAR(255) NOT NULL,
     description TEXT,
-    images VARCHAR(255),
+    image VARCHAR(255),
     prix DECIMAL(10, 2) NOT NULL,
     categorie VARCHAR(255) NOT NULL
 );
 
-  identifiant: DataTypes.INTEGER,
-  libelle: DataTypes.TEXT,
-  description: DataTypes.TEXT,
-  images: DataTypes.STRING,
-  prix: DataTypes.FLOAT,
-  categorie: DataTypes.STRING,
+
+INSERT INTO products (libelle, description, image, prix, categorie) VALUES
+('Chapeau', 'Un chapeau que personne ne peut voir', NULL, 99.99, 'Magie'),
+('Poulet', 'Some fried chicken', NULL, 9.9, 'nourriture'),
+('Cravate', 'Parfaite pour les soirées', NULL, 50.50, 'Mode');
