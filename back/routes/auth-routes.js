@@ -4,6 +4,6 @@ const {Register, Login, Logout} = require('../controllers/auth-controller');
 
 router.post("/",Register);
 router.post('/login',Login);
-router.delete("/logout",Logout);
+router.post("/logout",Logout);
 
 module.exports = router;
