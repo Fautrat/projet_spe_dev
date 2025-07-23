@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+require('dotenv').config({ path: '../.env' });
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 3000;
@@ -12,7 +13,7 @@ const authRoutes = require('./routes/auth-routes');
 // Can use CORS for just one route if needed
 
 app.use(cors( {
-    origin: 'http://localhost:5173',
+    origin: 'http://localhost:' + (process.env.VITE_PORT || 5100),
     credentials: true
 }));
 
