@@ -2,17 +2,28 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Login</title>
+  <title>Accueil - Produits</title>
 </head>
 <body>
-  <main class="container mt-5">
-    <h1>Connexion</h1>
-    <form id="login-form" class="mt-2">
-      <input type="text" class="form-control" placeholder="Nom de compte" />
-      <input type="password" class="form-control mt-2" placeholder="Mot de passe" />
-      <button class="btn btn-primary mt-3" type="submit">Se connecter</button>
-    </form>
-  </main>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid justify-content-between">
+      <form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Rechercher un produit" aria-label="Search" id="search-input"/>
+      </form>
+
+      <div class="d-flex">
+        <a class="btn btn-light me-2" href="login.html">Connexion</a>
+        <a class="btn btn-outline-light" href="register.html">Inscription</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <h1 class="mb-4 text-center">Tous les produits</h1>
+    <div id="product-list" class="row row-cols-1 row-cols-md-4 g-4">
+      <!-- Liste des produits -->
+    </div>
+  </div>
 
   <script type="module" src="/src/main.js"></script>
 </body>

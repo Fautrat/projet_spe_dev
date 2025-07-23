@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Connexion</title>
+</head>
+<body class="bg-light d-flex align-items-center justify-content-center vh-100">
+    <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
+        <h2 class="text-center mb-4">Connexion</h2>
+        <form id="login-form">
+            <input type="hidden" name="csrf" value="<%= csrf %>">
+            <div class="mb-3">
+                <label for="username" class="form-label">Nom d'utilisateur</label>
+                <input type="text" id="username" class="form-control" required />
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input type="password" id="password" class="form-control" required />
+            </div>
+            <button class="btn btn-primary w-100" type="submit">Se connecter</button>
+        </form>
+        <div class="text-center mt-3">
+            <a href="register.html">Pas encore inscrit ?</a>
+        </div>
+    </div>
+    <script type="module" src="/src/login.js"></script>
+</body>
+</html>
