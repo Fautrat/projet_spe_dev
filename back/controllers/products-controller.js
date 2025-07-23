@@ -1,7 +1,7 @@
 const {Product} = require('../models/products-model');
 
 
-module.exports.getProducts = async (req, res) => {
+module.exports.GetProducts = async (req, res) => {
   try {
     const products = await Product.findAll();
     res.status(200).json(products);
@@ -13,7 +13,7 @@ module.exports.getProducts = async (req, res) => {
 };
 
 
-module.exports.getProductById = async (req, res) => {
+module.exports.GetProductById = async (req, res) => {
   try{
     const {id} = req.params;
     const product = await Product.findByPk(id);
@@ -25,7 +25,7 @@ module.exports.getProductById = async (req, res) => {
   }
 };
 
-module.exports.getProductByLibelle = async (req, res) => {
+module.exports.GetProductByLibelle = async (req, res) => {
     try{
     const {libelle} = req.params;
     const product = await Product.findOne({
@@ -41,7 +41,7 @@ module.exports.getProductByLibelle = async (req, res) => {
   }
 };
 
-module.exports.createProduct = async (req, res) => {
+module.exports.CreateProduct = async (req, res) => {
     try {
         const { libelle, description, images, prix, categorie } = req.body;
         const newProduct = await Product.create({ libelle, description, images, prix, categorie });
@@ -53,7 +53,7 @@ module.exports.createProduct = async (req, res) => {
 }
 
 
-module.exports.editProduct = async (req, res) => {
+module.exports.EditProduct = async (req, res) => {
   const id = req.params.id;
   const { libelle, description, images, prix, categorie } = req.body;
 
@@ -71,7 +71,7 @@ module.exports.editProduct = async (req, res) => {
   }
 };
 
-module.exports.deleteProduct = async (req, res) => {
+module.exports.DeleteProduct = async (req, res) => {
   const id = req.params.id;
 
   try {
