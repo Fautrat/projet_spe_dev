@@ -10,15 +10,17 @@ function createProductCard(product)
     const col = document.createElement('div');
     col.className = 'col';
 
+    // ${product.image[0]}
+
     col.innerHTML = `
         <div class="card h-100 shadow-sm">
-        <img src="${product.images[0]}" class="card-img-top" alt="${product.libelle}">
+        <img src="https://picsum.photos/id/237/400/300" class="card-img-top" alt="${product.libelle}">
         <div class="card-body d-flex flex-column">
             <h5 class="card-title">${product.libelle}</h5>
             <p class="card-text text-muted">${product.categorie}</p>
             <p class="card-text">${product.description}</p>
             <div class="mt-auto">
-            <p class="fw-bold text-end">${product.prix.toFixed(2)} €</p>
+            <p class="fw-bold text-end">${product.prix} €</p>
             <a href="product.html?id=${product.id}" class="btn btn-primary w-100">Voir le produit</a>
             </div>
         </div>
@@ -38,7 +40,7 @@ function renderProducts(products)
 }
 
 // Chargement initial des produits
-fetch('../test.json')
+fetch('http://localhost:3000/api/products')
     .then((res) => res.json())
     .then((products) => {
         allProducts = products;

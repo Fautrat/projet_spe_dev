@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config({ path: '../.env' });
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 3000;
@@ -10,7 +11,7 @@ const sequelize = require('./config/mysql');
 // Can use CORS for just one route if needed
 
 app.use(cors( {
-    origin: 'http://localhost:XXXX',
+    origin: 'http://localhost:' + (process.env.VITE_PORT || 5100),
     credentials: true
 }));
 
