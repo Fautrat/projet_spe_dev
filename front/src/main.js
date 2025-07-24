@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
+import { getCSRFToken } from '/src/csrf.js';
 
 const productList = document.getElementById('product-list');
 let allProducts = [];
@@ -50,7 +51,7 @@ function createProductCard(product, isConnected)
                 ${isConnected
                 ? `
                 <a href="modify-product.html?id=${product.id}" class="btn btn-warning btn-sm flex-fill">Modifier</a>
-                <a href="delete-product.html?id=${product.id}" class="btn btn-danger btn-sm flex-fill">Supprimer</a>
+                <a href="#" class="btn btn-danger btn-sm flex-fill delete-btn" data-id="${product.id}">Supprimer</a>
                 ` : ''
                 }
             </div>
@@ -62,14 +63,50 @@ function createProductCard(product, isConnected)
 }
 
 // Fonction pour afficher une liste de produits
-function renderProducts(products, isConnected = false) {
+async function renderProducts(products, isConnected = false) {
     productList.innerHTML = '';
     products.forEach((product) => {
         const card = createProductCard(product, isConnected);
         productList.appendChild(card);
     });
-}
 
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+
+    const csrfToken = await getCSRFToken();
+
+    deleteButtons.forEach((btn) => {
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const id = btn.getAttribute('data-id');
+
+            if (!confirm("Êtes-vous sûr de vouloir supprimer ce produit ?")) return;
+
+            try {
+                const res = await fetch(`http://localhost:3000/api/products/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-xsrf-token': csrfToken
+                    }
+                });
+
+                if (res.ok) {
+                    alert('Produit supprimé avec succès.');
+                    // Met à jour la liste localement
+                    allProducts = allProducts.filter(p => p.id != id);
+                    await renderProducts(allProducts, isConnected); 
+                } else {
+                    const error = await res.json();
+                    alert('Erreur lors de la suppression : ' + error.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Erreur côté client.");
+            }
+        });
+    });
+}
 
 // Chargement initial des produits
 fetch('http://localhost:3000/api/products')
@@ -101,11 +138,23 @@ function showAuthUI() {
 
     const logoutBtn = document.getElementById('logout-btn');
     logoutBtn.addEventListener('click', async () => {
-        await fetch('http://localhost:3000/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-        });
-        location.reload();
+
+        try {
+            const csrfToken = await getCSRFToken();
+
+            await fetch('http://localhost:3000/api/auth/logout', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-csrf-token': csrfToken
+                }
+            });
+            location.reload();
+        } catch (err) {
+            console.error('Erreur lors de la déconnexion :', err);
+            alert("Impossible de se déconnecter.");
+        }
     });
 }
 
@@ -117,3 +166,4 @@ function showGuestUI() {
 
 
 updateUIForAuth();
+

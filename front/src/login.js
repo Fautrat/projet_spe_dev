@@ -38,11 +38,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         if (res.ok) {
-        alert('Connexion réussie !');
-        window.location.href = 'index.html';
+            alert('Connexion réussie !');
+            window.location.href = 'index.html';
         } else {
-        const error = await res.json();
-        alert('Erreur : ' + error.message);
+            const error = await res.json();
+            alert('Erreur : ' + error.message);
         }
     });
 });

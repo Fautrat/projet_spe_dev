@@ -25,6 +25,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
+        // Vérification du mot de passe
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+        if (!passwordRegex.test(password)) {
+            alert("Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un symbole.");
+            return;
+        }
+
         try {
             const res = await fetch('http://localhost:3000/api/auth', {
                 method: 'POST',
@@ -43,8 +50,26 @@ document.addEventListener('DOMContentLoaded', async () => {
             const data = await res.json();
 
             if (res.ok) {
-                alert(data.message);
-                window.location.href = 'index.html';
+                const res = await fetch('http://localhost:3000/api/auth/login', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-xsrf-token': csrfToken
+                },
+                body: JSON.stringify({
+                    email,
+                    password
+                })
+                });
+
+                if (res.ok) {
+                    alert('Connexion réussie !');
+                    window.location.href = 'index.html';
+                } else {
+                    const error = await res.json();
+                    alert('Erreur : ' + error.message);
+                }
             } else {
                 console.error('Erreur serveur :', data);
                 alert('Erreur : ' + data.message);
