@@ -2,13 +2,20 @@ const { User } = require('../models/users-model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config({ path: '../.env' });
-
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$/;
 
 module.exports.Register = async(req,res) =>{
 
     const {email, password} = req.body;
     console.log(email,password);
     try{
+
+        if (!PASSWORD_REGEX.test(password)) {
+            return res.status(400).json({
+                message:
+                'Mot de passe faible : minimum 8 caractères, avec majuscule, minuscule, chiffre et symbole.'
+            });
+        }
 
         const existingUser = await User.findOne({ where: { email } });
         if(existingUser) return res.status(400).json({message : "User already in the database"});
