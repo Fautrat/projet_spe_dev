@@ -1,10 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const csurf = require('csurf');
 const helmet = require('helmet');
 const path = require('path');
 require('dotenv').config({ path: '../.env' });
+const csrfMiddleware = require('./middlewares/csrf-middleware');
+const jwt = require('jsonwebtoken');
+const Tokens = require('csrf');
+const tokens = new Tokens();
 
 const {GetProducts} = require('./controllers/products-controller');
 const app = express();
@@ -15,7 +18,6 @@ const authRoutes = require('./routes/auth-routes');
 const basketRoutes = require('./routes/basket-routes');
 
 const sequelize = require('./config/mysql');
-const { User, Product, Basket, BasketItem } = require('./models/associations');
 sequelize.sync({ alter: true });
 
 app.use(helmet({
@@ -34,12 +36,8 @@ app.use(express.urlencoded({extended:false}));
 // permet de rendre le dossier assets accessible côté front
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-// Protection csrf
-const csrfProtection = csurf({ cookie: { httpOnly: true, sameSite: 'strict' } });
-app.use(csrfProtection);
-
-app.use('/api/products', productsRoutes);
-app.use('/api/basket', basketRoutes);
+app.use('/api/products', csrfMiddleware, productsRoutes);
+app.use('/api/basket', csrfMiddleware, basketRoutes);
 app.use('/api/auth',authRoutes);
 
 app.get('/statistiques', (req, res) => {
@@ -47,7 +45,18 @@ app.get('/statistiques', (req, res) => {
 });
 
 app.get('/api/csrf-token', (req, res) => {
-    res.json({ csrfToken: req.csrfToken() });
+  const jwtToken = req.cookies['token'];
+  if (!jwtToken) return res.status(401).json({ error: 'Not authenticated' });
+
+  try {
+    const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET);
+    const token = tokens.create(decoded.csrfSecret);
+
+    return res.json({ csrfToken: token });
+  } catch (err) {
+    console.log(err);
+    return res.status(401).json({ error: 'Invalid token' });
+  }
 });
 
 app.listen(PORT, async () => {

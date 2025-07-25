@@ -88,7 +88,7 @@ async function renderProducts(products, isConnected = false) {
                     credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
-                        'x-xsrf-token': csrfToken
+                        'x-csrf-token': csrfToken
                     }
                 });
 
@@ -97,6 +97,7 @@ async function renderProducts(products, isConnected = false) {
                     // Met à jour la liste localement
                     allProducts = allProducts.filter(p => p.id != id);
                     await renderProducts(allProducts, isConnected);
+                    updateCartBadge();
                 } else {
                     const error = await res.json();
                     alert('Erreur lors de la suppression : ' + error.message);
@@ -119,7 +120,7 @@ async function renderProducts(products, isConnected = false) {
                     credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
-                        'x-xsrf-token': csrfToken
+                        'x-csrf-token': csrfToken
                     },
                     body: JSON.stringify({ productId: id })
                 });

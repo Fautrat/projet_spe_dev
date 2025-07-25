@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-xsrf-token': csrfToken
+                    'x-csrf-token': csrfToken
                 },
                 body: JSON.stringify({
                     username,
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-xsrf-token': csrfToken
+                    'x-csrf-token': csrfToken
                 },
                 body: JSON.stringify({
                     email,

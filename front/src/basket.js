@@ -9,8 +9,7 @@ async function loadBasket() {
         const res = await fetch('http://localhost:3000/api/basket', {
             credentials: 'include',
             headers: {
-                'Content-Type': 'application/json',
-                'x-xsrf-token': await getCSRFToken()
+                'Content-Type': 'application/json'
             }
         });
 
@@ -75,7 +74,7 @@ async function renderBasket(items) {
             method: 'DELETE',
             credentials: 'include',
             headers: {
-                'x-xsrf-token': csrfToken
+                'x-csrf-token': csrfToken
             }
             });
 
@@ -105,7 +104,7 @@ if (clearBtn) {
         const res = await fetch('http://localhost:3000/api/basket/clear', {
             method: 'DELETE',
             credentials: 'include',
-            headers: { 'x-xsrf-token': csrfToken }
+            headers: { 'x-csrf-token': csrfToken }
         });
 
         if (res.ok) {

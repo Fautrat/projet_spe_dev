@@ -1,6 +1,8 @@
 const { User } = require('../models/users-model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const Tokens = require('csrf');
+const tokens = new Tokens();
 require('dotenv').config({ path: '../.env' });
 
 module.exports.Register = async(req,res) =>{
@@ -35,9 +37,9 @@ module.exports.Login = async(req,res) =>{
 
         const isValidPassword = await bcrypt.compare(password,existingUser.password);
         if(!isValidPassword) return res.status(400).json({message : "Invalid credentials"});
-        const token = jwt.sign({ email: existingUser.email, id: existingUser.id }, process.env.JWT_SECRET, { expiresIn: '1h'});
+        const token = jwt.sign({ email: existingUser.email, id: existingUser.id, csrfSecret : tokens.secretSync()}, process.env.JWT_SECRET, { expiresIn: '1h'});
 
-        res.cookie('token', token, { httpOnly: true });
+        res.cookie('token', token, { httpOnly: true, sameSite : 'Strict' }); // secure : true en production 
         res.status(200).json({ message: 'Login successful', token: token });
     }
     catch(ex){
