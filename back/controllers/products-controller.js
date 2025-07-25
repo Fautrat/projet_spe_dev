@@ -1,5 +1,6 @@
 const {Product} = require('../models/products-model');
-
+const path = require('path');
+const fs = require('fs');
 
 module.exports.GetProducts = async (req, res) => {
   try {
@@ -43,8 +44,9 @@ module.exports.GetProductByLibelle = async (req, res) => {
 
 module.exports.CreateProduct = async (req, res) => {
     try {
-        const { libelle, description, images, prix, categorie } = req.body;
-        const newProduct = await Product.create({ libelle, description, images, prix, categorie });
+        const { libelle, description, prix, categorie } = req.body;
+        const imagePath = req.file ? `/assets/${req.file.filename}` : null;
+        const newProduct = await Product.create({ libelle, description, imagePath, prix, categorie });
         res.status(201).json(newProduct);
     } catch (error) {
         console.error(error);
@@ -55,7 +57,9 @@ module.exports.CreateProduct = async (req, res) => {
 
 module.exports.EditProduct = async (req, res) => {
   const id = req.params.id;
-  const { libelle, description, images, prix, categorie } = req.body;
+  const { libelle, description, prix, categorie } = req.body;
+
+  const imagePath = req.file ? `/assets/${req.file.filename}` : null;
 
   try {
     const product = await Product.findByPk(id);
@@ -63,7 +67,15 @@ module.exports.EditProduct = async (req, res) => {
       return res.status(404).json({ error: 'Product not found' });
     }
 
-    await product.update({ libelle, description, images, prix, categorie });
+    // Supprimer ancienne image si une nouvelle est uploadée
+    if (req.file && product.imagePath) {
+      const oldPath = path.join(__dirname, '..', product.imagePath);
+      fs.unlink(oldPath, err => {
+        if (err) console.warn('Ancienne image non supprimée :', err.message);
+      });
+    }
+
+    await product.update({ libelle, description, imagePath, prix, categorie });
     res.status(200).json(product);
   } catch (error) {
     console.error(error);
@@ -78,6 +90,14 @@ module.exports.DeleteProduct = async (req, res) => {
     const product = await Product.findByPk(id);
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // Supprimer ancienne image si non null
+    if (product.imagePath) {
+      const oldPath = path.join(__dirname, '..', product.imagePath);
+      fs.unlink(oldPath, err => {
+        if (err) console.warn('Ancienne image non supprimée :', err.message);
+      });
     }
 
     await product.destroy();

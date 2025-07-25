@@ -9,7 +9,7 @@ const productId = urlParams.get('id');
 async function loadProduct() {
     try {
         const res = await fetch(`http://localhost:3000/api/products/${productId}`, {
-        credentials: 'include'
+            credentials: 'include'
         });
         const product = await res.json();
 
@@ -26,35 +26,35 @@ async function loadProduct() {
 document.getElementById('modify-product-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const libelle = document.getElementById('libelle').value;
-    const categorie = document.getElementById('categorie').value;
-    const description = document.getElementById('description').value;
-    const prix = document.getElementById('prix').value;
+    const formData = new FormData();
+    formData.append('libelle', document.getElementById('libelle').value);
+    formData.append('categorie', document.getElementById('categorie').value);
+    formData.append('description', document.getElementById('description').value);
+    formData.append('prix', document.getElementById('prix').value);
+    formData.append('image', document.getElementById('image').files[0]);
 
     const csrfToken = await getCSRFToken();
 
     try {
         const res = await fetch(`http://localhost:3000/api/products/${productId}`, {
-        method: 'PUT',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-csrf-token': csrfToken
-        },
-        body: JSON.stringify({ libelle, categorie, description, prix })
+            method: 'PUT',
+            credentials: 'include',
+            headers: { 'x-csrf-token': csrfToken },
+            body: formData
         });
 
         if (res.ok) {
-        alert('Produit modifié avec succès.');
-        window.location.href = 'index.html';
+            alert('Produit modifié avec succès.');
+            window.location.href = 'index.html';
         } else {
-        const err = await res.json();
-        alert('Erreur : ' + err.message);
+            const err = await res.json();
+            alert('Erreur : ' + err.message);
         }
     } catch (err) {
         console.error(err);
         alert("Erreur lors de la mise à jour.");
     }
 });
+
 
 loadProduct();

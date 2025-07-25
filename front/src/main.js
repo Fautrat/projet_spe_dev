@@ -38,10 +38,10 @@ function createProductCard(product, isConnected)
 
     col.innerHTML = `
         <div class="card h-100 shadow-sm">
-        <img src="https://picsum.photos/id/237/400/300" class="card-img-top" alt="${product.libelle}">
+        <img src=${product.imagePath ? "http://localhost:3000" +product.imagePath : "https://picsum.photos/id/237/400/300"} class="card-img-top" alt="${product.libelle}">
         <div class="card-body d-flex flex-column">
-            <h5 class="card-title">${product.libelle}</h5>
-            <p class="card-text text-muted">${product.categorie}</p>
+            <h5 class="card-title text-center">${product.libelle}</h5>
+            <p class="card-text text-muted text-center">${product.categorie}</p>
             <p class="card-text">${product.description}</p>
             <div class="mt-auto">
             <p class="fw-bold text-end">${product.prix} €</p>

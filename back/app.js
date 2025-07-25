@@ -3,6 +3,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const csurf = require('csurf');
 const helmet = require('helmet');
+const path = require('path');
 require('dotenv').config({ path: '../.env' });
 
 const app = express();
@@ -28,8 +29,9 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 
-const Tokens = require('csrf');
-const tokens = new Tokens();
+// permet de rendre le dossier assets accessible côté front
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
+
 // Protection csrf
 const csrfProtection = csurf({ cookie: { httpOnly: true, sameSite: 'strict' } });
 app.use(csrfProtection);

@@ -9,7 +9,7 @@ const Product = sequelize.define('Product', {
   },
   libelle: DataTypes.TEXT,
   description: DataTypes.TEXT,
-  image: DataTypes.STRING,
+  imagePath: DataTypes.STRING,
   prix: DataTypes.FLOAT,
   categorie: DataTypes.STRING,
 },{
