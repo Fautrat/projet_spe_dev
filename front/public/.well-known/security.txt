@@ -1,0 +1,3 @@
+Contact: mailto:security@spedev.com
+Expires: 2025-12-31T23:59:00.00
+Preferred-Languages: fr, en

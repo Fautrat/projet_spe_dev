@@ -6,7 +6,6 @@ const {GetProducts,GetProductById,GetProductByLibelle,
 const Authenticate = require('../middlewares/auth-middleware');
 const upload = require('../middlewares/upload-middleware');
 
-
 router.get('/', GetProducts);
 router.get('/:id', GetProductById);
 router.get('/libelle/:libelle', GetProductByLibelle);

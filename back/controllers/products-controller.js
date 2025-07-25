@@ -13,7 +13,6 @@ module.exports.GetProducts = async (req, res) => {
   }
 };
 
-
 module.exports.GetProductById = async (req, res) => {
   try{
     const {id} = req.params;

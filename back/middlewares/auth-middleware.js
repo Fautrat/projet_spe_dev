@@ -15,4 +15,21 @@ function Authenticate(req, res, next) {
     }
 }
 
-module.exports = Authenticate;
+function Verify(req, res) {
+    const token = req.cookies.token;
+    if (!token) {
+        return res.status(403).json({ message: 'Invalid credentials' });
+    }
+
+    try {
+        jwt.verify(token, process.env.JWT_SECRET);
+        return res.status(200).json({ message: 'Token is valid' });
+    } catch (error) {
+        console.error(error);
+        return res.status(403).json({ message: 'Invalid credentials' });
+    }
+}
+
+
+
+module.exports = {Authenticate, Verify};

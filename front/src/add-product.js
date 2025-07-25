@@ -2,6 +2,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 
 import { getCSRFToken } from '/src/csrf.js';
+import {IsAuthenticated} from '/src/auth.js';
+
+IsAuthenticated();
 
 document.getElementById('add-product-form').addEventListener('submit', async (e) => {
     e.preventDefault();

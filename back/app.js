@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const path = require('path');
 require('dotenv').config({ path: '../.env' });
 
+const {GetProducts} = require('./controllers/products-controller');
 const app = express();
 const PORT = process.env.SERVER_PORT || 3000;
 
@@ -21,7 +22,6 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
-// Can use CORS for just one route if needed
 app.use(cors( {
     origin: 'http://localhost:' + (process.env.VITE_PORT || 5173),
     credentials: true
@@ -42,8 +42,12 @@ app.use('/api/products', productsRoutes);
 app.use('/api/basket', basketRoutes);
 app.use('/api/auth',authRoutes);
 
+app.get('/statistiques', (req, res) => {
+    GetProducts(req, res);
+});
+
 app.get('/api/csrf-token', (req, res) => {
-  res.json({ csrfToken: req.csrfToken() });
+    res.json({ csrfToken: req.csrfToken() });
 });
 
 app.listen(PORT, async () => {
