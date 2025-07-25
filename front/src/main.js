@@ -95,7 +95,7 @@ async function renderProducts(products, isConnected = false) {
                     alert('Produit supprimé avec succès.');
                     // Met à jour la liste localement
                     allProducts = allProducts.filter(p => p.id != id);
-                    await renderProducts(allProducts, isConnected); 
+                    await renderProducts(allProducts, isConnected);
                 } else {
                     const error = await res.json();
                     alert('Erreur lors de la suppression : ' + error.message);

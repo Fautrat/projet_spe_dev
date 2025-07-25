@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/mysql'); // Ton instance Sequelize
+const sequelize = require('../config/mysql');
+const { Basket } = require('./basket-model');
 
 const User = sequelize.define('User', {
   id: {
@@ -12,6 +13,10 @@ const User = sequelize.define('User', {
 }, {
   timestamps: false,
   tableName: 'users'
+});
+
+User.afterCreate(async (user) => {
+  await Basket.create({ userId: user.id });
 });
 
 module.exports = { User };

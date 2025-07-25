@@ -7,13 +7,18 @@ require('dotenv').config({ path: '../.env' });
 
 const app = express();
 const PORT = process.env.SERVER_PORT || 3000;
+
 const productsRoutes = require('./routes/products-routes');
 const authRoutes = require('./routes/auth-routes');
+const basketRoutes = require('./routes/basket-routes');
+
+const sequelize = require('./config/mysql');
+const { User, Product, Basket, BasketItem } = require('./models/associations');
+sequelize.sync({ alter: true });
 
 app.use(helmet());
 
 // Can use CORS for just one route if needed
-
 app.use(cors( {
     origin: 'http://localhost:' + (process.env.VITE_PORT || 5173),
     credentials: true
@@ -23,9 +28,12 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 
+const Tokens = require('csrf');
+const tokens = new Tokens();
 // Protection csrf
 const csrfProtection = csurf({ cookie: { httpOnly: true, sameSite: 'strict' } });
 app.use(csrfProtection);
+
 app.get('/api/csrf-token', (req, res) => {
   const secret = tokens.secretSync();
   const token = tokens.create(secret);
@@ -39,6 +47,7 @@ app.get('/api/csrf-token', (req, res) => {
 });
 
 app.use('/api/products', productsRoutes);
+app.use('/api/basket', basketRoutes);
 app.use('/api/auth',authRoutes);
 
 app.get('/api/csrf-token', (req, res) => {

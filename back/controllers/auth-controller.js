@@ -17,6 +17,7 @@ module.exports.Register = async(req,res) =>{
             email : email,
             password : hashedPassword,
         });
+
         res.status(201).json({ message: 'User created successfully', user: { email: newUser.email } });
     }
     catch(ex){
@@ -37,6 +38,7 @@ module.exports.Login = async(req,res) =>{
         const token = jwt.sign({ email: existingUser.email }, process.env.JWT_SECRET, { expiresIn: '1h'});
 
         res.cookie('token', token, { httpOnly: true });
+        res.cookie('user', JSON.stringify(existingUser), { httpOnly: true });
         res.status(200).json({ message: 'Login successful', token: token });
     }
     catch(ex){
