@@ -137,3 +137,6 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# dossier assets pour les images cote backend
+*/assets

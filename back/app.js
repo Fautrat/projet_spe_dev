@@ -17,7 +17,9 @@ const sequelize = require('./config/mysql');
 const { User, Product, Basket, BasketItem } = require('./models/associations');
 sequelize.sync({ alter: true });
 
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 
 // Can use CORS for just one route if needed
 app.use(cors( {
@@ -35,18 +37,6 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 // Protection csrf
 const csrfProtection = csurf({ cookie: { httpOnly: true, sameSite: 'strict' } });
 app.use(csrfProtection);
-
-app.get('/api/csrf-token', (req, res) => {
-  const secret = tokens.secretSync();
-  const token = tokens.create(secret);
-
-  res.cookie('csrf-secret', secret, {
-    httpOnly: true,
-    sameSite: 'Strict',
-  });
-
-  res.json({ csrfToken: token });
-});
 
 app.use('/api/products', productsRoutes);
 app.use('/api/basket', basketRoutes);
