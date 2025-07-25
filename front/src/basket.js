@@ -26,34 +26,31 @@ async function loadBasket() {
     }
 }
 
-// Fonction pour créer une card Bootstrap pour un produit
-function createProductCard(product, isConnected) 
+// Fonction pour créer une card Bootstrap pour un item de panier
+function createProductCard(item) 
 {
     const col = document.createElement('div');
+    const product = item.Product;
     col.className = 'col';
 
     col.innerHTML = `
-        <div class="card h-100 shadow-sm">
-        <img src=${product.imagePath ? "http://localhost:3000" +product.imagePath : "https://picsum.photos/id/237/400/300"} class="card-img-top" alt="${product.libelle}">
+      <div class="card h-100 shadow-sm">
+        <img src="${product.imagePath ? `http://localhost:3000${product.imagePath}` : 'https://picsum.photos/id/237/400/300'}" 
+             class="card-img-top" 
+             alt="${product.libelle}">
         <div class="card-body d-flex flex-column">
-            <h5 class="card-title text-center">${product.libelle}</h5>
-            <p class="card-text text-muted text-center">${product.categorie}</p>
-            <p class="card-text">${product.description}</p>
-            <div class="mt-auto">
+          <h5 class="card-title">${product.libelle}</h5>
+          <p class="card-text text-muted">${product.categorie}</p>
+          <p class="card-text">${product.description}</p>
+          <div class="mt-auto">
             <p class="fw-bold text-end">${product.prix} €</p>
-            <div class="d-flex gap-2 flex-wrap">
-                <a href="product.html?id=${product.id}" class="btn btn-primary btn-sm flex-fill">Voir</a>
-                <a href="#" class="btn btn-outline-secondary btn-sm flex-fill basket-btn" data-id="${product.id}">+</a>
-                ${isConnected
-                ? `
-                <a href="modify-product.html?id=${product.id}" class="btn btn-warning btn-sm flex-fill">Modifier</a>
-                <a href="#" class="btn btn-danger btn-sm flex-fill delete-btn" data-id="${product.id}">Supprimer</a>
-                ` : ''
-                }
-            </div>
-            </div>
+            <p class="text-muted">Quantité : ${item.quantity}</p>
+            <button class="btn btn-danger btn-sm w-100 remove-btn" data-id="${product.id}">
+              Supprimer du panier
+            </button>
+          </div>
         </div>
-        </div>
+      </div>
     `;
     return col;
 }
@@ -64,7 +61,7 @@ async function renderBasket(items) {
     const csrfToken = await getCSRFToken();
 
     items.forEach((item) => {
-        const card = createProductCard(item.Product, isConnected);
+        const card = createProductCard(item);
         productList.appendChild(card);
     });
 

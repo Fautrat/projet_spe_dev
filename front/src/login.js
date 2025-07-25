@@ -25,16 +25,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         const password = document.getElementById('password').value;
 
         const res = await fetch('http://localhost:3000/api/auth/login', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-xsrf-token': csrfToken
-        },
-        body: JSON.stringify({
-            email,
-            password
-        })
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-xsrf-token': csrfToken
+            },
+            body: JSON.stringify({
+                email,
+                password
+            })
         });
 
         if (res.ok) {

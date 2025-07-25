@@ -126,6 +126,7 @@ async function renderProducts(products, isConnected = false) {
 
                 if (res.ok) {
                     alert('Produit ajouté au panier avec succès.');
+                    updateCartBadge();
                 } else {
                     const error = await res.json();
                     alert('Erreur lors de l\'ajout au panier : ' + error.message);
@@ -194,6 +195,28 @@ function showGuestUI() {
     document.getElementById('add-product-container').classList.add('d-none');
 }
 
+async function updateCartBadge() {
+    try {
+        const res = await fetch('http://localhost:3000/api/basket', {
+        credentials: 'include',
+        });
 
+        if (!res.ok) throw new Error('Utilisateur non connecté ou panier indisponible');
+
+        const basket = await res.json();
+
+        const totalItems = basket.BasketItems.reduce((sum, item) => sum + item.quantity, 0);
+
+        const badge = document.getElementById('cart-badge');
+        badge.textContent = totalItems;
+        badge.classList.remove('d-none');
+
+    } catch (err) {
+        console.warn('Badge panier non affiché :', err.message);
+        document.getElementById('cart-badge').classList.add('d-none');
+    }
+}
+
+updateCartBadge();
 updateUIForAuth();
 

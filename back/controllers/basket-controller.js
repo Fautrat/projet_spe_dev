@@ -77,19 +77,20 @@ module.exports.removeProductFromBasket = async (req, res) => {
   }
 
 module.exports.clearBasket = async (req, res) => {
-
-    try {
-      const basket = await Basket.findOne({ where: { userId: req.user.id } });
-      if (!basket) {
-        return res.status(404).json({ message: 'Basket not found' });
-      }
-
-      await BasketItem.destroy({ where: { basketId: basket.id } });
-
-      res.status(200).json({ message: 'Basket cleared' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server error' });
+  try {
+    const basket = await Basket.findOne({ where: { userId: req.user.id } });
+    if (!basket) {
+      return res.status(404).json({ message: 'Basket not found' });
     }
+
+    console.log("clear");
+    await BasketItem.destroy({ where: { basketId: basket.id } });
+    console.log("basket cleard");
+
+    res.status(200).json({ message: 'Basket cleared' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
+}
 

@@ -6,7 +6,8 @@ const {getBasket, addProductToBasket, removeProductFromBasket, clearBasket} = re
 router.get('/', Authenticate, getBasket);
 router.post('/', Authenticate, addProductToBasket);
 
-router.delete('/:productId', Authenticate, removeProductFromBasket);
 router.delete('/clear', Authenticate, clearBasket);
+router.delete('/:productId', Authenticate, removeProductFromBasket);
+
 
 module.exports = router;

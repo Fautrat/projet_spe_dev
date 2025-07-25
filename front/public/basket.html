@@ -7,36 +7,28 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container-fluid justify-content-between">
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Rechercher un produit" aria-label="Search"
-          id="search-input" />
-      </form>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <div class="d-flex ms-auto" id="navbar-logout">
+            <a class="btn btn-secondary me-2" id="logout-btn">Déconnexion</a>
+            </div>
+        </div>
+    </nav>
 
-      <div class="d-flex d-none" id="navbar-logout">
-        <a class="btn btn-secondary btn-outline-light me-2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart"
-          viewBox="0 0 16 16">
-          <path
-            d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
-        </svg>Panier</a>
-        <a class="btn btn-secondary me-2" id="logout-btn">Déconnexion</a>
-      </div>
+    <div class="container mt-4">
+        <h1 class="mb-4 text-center">Tous les produits du panier</h1>
+        <div id="product-list" class="row row-cols-1 row-cols-md-4 g-4">
+        <!-- Liste des produits -->
+        </div>
+        <div class="text-center mt-4">
+            <button class="btn btn-danger" id="clear-basket-btn">Vider le panier</button>
+        </div>
+        <div class="mt-4">
+            <a href="index.html" class="btn btn-secondary">Retour à la liste</a>
+        </div>
     </div>
-  </nav>
 
-  <div class="container mt-4">
-    <h1 class="mb-4 text-center">Tous les produits du panier</h1>
-    <div id="product-list" class="row row-cols-1 row-cols-md-4 g-4">
-      <!-- Liste des produits -->
-    </div>
-    <div class="text-center mt-4">
-        <button class="btn btn-danger" id="clear-basket-btn">Vider le panier</button>
-    </div>
-  </div>
-
-  <script type="module" src="/src/basket.js"></script>
+    <script type="module" src="/src/basket.js"></script>
 </body>
 
 </html>
