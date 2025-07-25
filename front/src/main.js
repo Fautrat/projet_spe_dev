@@ -47,7 +47,7 @@ function createProductCard(product, isConnected)
             <p class="fw-bold text-end">${product.prix} €</p>
             <div class="d-flex gap-2 flex-wrap">
                 <a href="product.html?id=${product.id}" class="btn btn-primary btn-sm flex-fill">Voir</a>
-                <a href="#" class="btn btn-outline-secondary btn-sm flex-fill">+</a>
+                <a href="#" class="btn btn-outline-secondary btn-sm flex-fill basket-btn" data-id="${product.id}">+</a>
                 ${isConnected
                 ? `
                 <a href="modify-product.html?id=${product.id}" class="btn btn-warning btn-sm flex-fill">Modifier</a>
@@ -62,7 +62,7 @@ function createProductCard(product, isConnected)
     return col;
 }
 
-// Fonction pour afficher une liste de produits
+// Fonction pour afficher une liste de produits avec de la logique
 async function renderProducts(products, isConnected = false) {
     productList.innerHTML = '';
     products.forEach((product) => {
@@ -71,6 +71,7 @@ async function renderProducts(products, isConnected = false) {
     });
 
     const deleteButtons = document.querySelectorAll('.delete-btn');
+    const basketButtons = document.querySelectorAll('.basket-btn');
 
     const csrfToken = await getCSRFToken();
 
@@ -99,6 +100,35 @@ async function renderProducts(products, isConnected = false) {
                 } else {
                     const error = await res.json();
                     alert('Erreur lors de la suppression : ' + error.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Erreur côté client.");
+            }
+        });
+    });
+
+    basketButtons.forEach((btn) => {
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const id = btn.getAttribute('data-id');
+
+            try {
+                const res = await fetch(`http://localhost:3000/api/basket`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-xsrf-token': csrfToken
+                    },
+                    body: JSON.stringify({ productId: id })
+                });
+
+                if (res.ok) {
+                    alert('Produit ajouté au panier avec succès.');
+                } else {
+                    const error = await res.json();
+                    alert('Erreur lors de l\'ajout au panier : ' + error.message);
                 }
             } catch (err) {
                 console.error(err);

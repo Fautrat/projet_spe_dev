@@ -3,7 +3,7 @@ const { Basket, BasketItem, Product } = require('../models/associations');
 module.exports.getBasket = async (req, res) => {
     try {
       const basket = await Basket.findOne({
-        where: { userId: req.cookies.user.id },
+        where: { userId: req.user.id },
         include: {
           model: BasketItem,
           include: Product
@@ -24,7 +24,7 @@ module.exports.getBasket = async (req, res) => {
 module.exports.addProductToBasket = async (req, res) => {
     const { productId } = req.body;
     try {
-      let basket = await Basket.findOne({ where: { userId: req.cookies.user.id } });
+      let basket = await Basket.findOne({ where: { userId: req.user.id } });
 
       let basketItem = await BasketItem.findOne({
         where: { basketId: basket.id, productId }
@@ -54,7 +54,7 @@ module.exports.removeProductFromBasket = async (req, res) => {
     const { productId } = req.params;
 
     try {
-      const basket = await Basket.findOne({ where: { userId: req.cookies.user.id } });
+      const basket = await Basket.findOne({ where: { userId: req.user.id } });
       if (!basket) {
         return res.status(404).json({ message: 'Basket not found' });
       }
@@ -79,7 +79,7 @@ module.exports.removeProductFromBasket = async (req, res) => {
 module.exports.clearBasket = async (req, res) => {
 
     try {
-      const basket = await Basket.findOne({ where: { userId: req.cookies.user.id } });
+      const basket = await Basket.findOne({ where: { userId: req.user.id } });
       if (!basket) {
         return res.status(404).json({ message: 'Basket not found' });
       }

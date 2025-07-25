@@ -35,10 +35,9 @@ module.exports.Login = async(req,res) =>{
 
         const isValidPassword = await bcrypt.compare(password,existingUser.password);
         if(!isValidPassword) return res.status(400).json({message : "Invalid credentials"});
-        const token = jwt.sign({ email: existingUser.email }, process.env.JWT_SECRET, { expiresIn: '1h'});
+        const token = jwt.sign({ email: existingUser.email, id: existingUser.id }, process.env.JWT_SECRET, { expiresIn: '1h'});
 
         res.cookie('token', token, { httpOnly: true });
-        res.cookie('user', JSON.stringify(existingUser), { httpOnly: true });
         res.status(200).json({ message: 'Login successful', token: token });
     }
     catch(ex){
