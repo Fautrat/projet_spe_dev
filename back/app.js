@@ -38,7 +38,7 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 app.use('/api/products', csrfMiddleware, productsRoutes);
 app.use('/api/basket', csrfMiddleware, basketRoutes);
-app.use('/api/auth',authRoutes);
+app.use('/api/auth', authRoutes);
 
 app.get('/statistiques', (req, res) => {
     GetProducts(req, res);

@@ -1,18 +1,19 @@
 export async function IsAuthenticated() {
     try {
-        const response = await fetch('http://localhost:3000/api/auth/verify', {
+        const response = await fetch('http://localhost:3000/api/auth/isConnected', {
             method: 'GET',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             }
         });
 
         if (!response.ok) {
-            window.location.href = '/login';
-            return;
+            return false;
         }
+        return true;
     } catch (error) {
         console.error('Error while fetching', error);
-        window.location.href = '/login';
+        return false;
     }
 }

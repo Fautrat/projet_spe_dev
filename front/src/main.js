@@ -1,32 +1,23 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 import { getCSRFToken } from '/src/csrf.js';
+import {IsAuthenticated} from '/src/auth.js';
+import { addToGuestBasket, getGuestBasket } from './guest-basket.js';
 
 const productList = document.getElementById('product-list');
 let allProducts = [];
 let isConnected = false;
+(async () => {
+    isConnected = await IsAuthenticated();
+    updateCartBadge();
+    updateUIForAuth();
+})();
 
-function updateUIForAuth() {
-    fetch('http://localhost:3000/api/auth/me', {
-        method: 'GET',
-        credentials: 'include'
-    })
-    .then(res => {
-        if (res.status === 200) {
-            isConnected = true; 
-            renderProducts(allProducts, true);
-            showAuthUI();
-        } else {
-            isConnected = false;
-            renderProducts(allProducts, false);
-            showGuestUI();
-        }
-    })
-    .catch(() => {
-        isConnected = false;
-        renderProducts(allProducts, false);
-        showGuestUI();
-    });
+function updateUIForAuth() 
+{
+    renderProducts(allProducts, isConnected);
+    if (isConnected) showAuthUI();
+    else  showGuestUI();
 }
 
 
@@ -114,27 +105,37 @@ async function renderProducts(products, isConnected = false) {
             e.preventDefault();
             const id = btn.getAttribute('data-id');
 
-            try {
-                const res = await fetch(`http://localhost:3000/api/basket`, {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-csrf-token': csrfToken
-                    },
-                    body: JSON.stringify({ productId: id })
-                });
+            // utilisateur connecté
+            if (isConnected) {
+                try {
+                    const res = await fetch(`http://localhost:3000/api/basket`, {
+                        method: 'POST',
+                        credentials: 'include',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-csrf-token': csrfToken
+                        },
+                        body: JSON.stringify({ productId: id })
+                    });
 
-                if (res.ok) {
-                    alert('Produit ajouté au panier avec succès.');
-                    updateCartBadge();
-                } else {
-                    const error = await res.json();
-                    alert('Erreur lors de l\'ajout au panier : ' + error.message);
+                    if (res.ok) {
+                        alert('Produit ajouté au panier avec succès.');
+                        updateCartBadge();
+                    } else {
+                        const error = await res.json();
+                        alert('Erreur lors de l\'ajout au panier : ' + error.message);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Erreur côté client.");
                 }
-            } catch (err) {
-                console.error(err);
-                alert("Erreur côté client.");
+            }
+            else
+            {
+                // Utilisateur non connecté → localStorage
+                addToGuestBasket(id);
+                alert("Produit ajouté au panier.");
+                updateCartBadge();
             }
         });
     });
@@ -164,11 +165,13 @@ searchInput.addEventListener('input', () => {
 });
 
 function showAuthUI() {
-    document.getElementById('navbar-auth').classList.add('d-none');
-    document.getElementById('navbar-logout').classList.remove('d-none');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    document.getElementById('login-btn').classList.add('d-none');
+    document.getElementById('register-btn').classList.add('d-none');
+    logoutBtn.classList.remove('d-none');
     document.getElementById('add-product-container').classList.remove('d-none');
 
-    const logoutBtn = document.getElementById('logout-btn');
     logoutBtn.addEventListener('click', async () => {
 
         try {
@@ -191,33 +194,40 @@ function showAuthUI() {
 }
 
 function showGuestUI() {
-    document.getElementById('navbar-auth').classList.remove('d-none');
-    document.getElementById('navbar-logout').classList.add('d-none');
+    document.getElementById('login-btn').classList.remove('d-none');
+    document.getElementById('register-btn').classList.remove('d-none');
+    document.getElementById('logout-btn').classList.add('d-none');
     document.getElementById('add-product-container').classList.add('d-none');
 }
 
 async function updateCartBadge() {
-    try {
-        const res = await fetch('http://localhost:3000/api/basket', {
-        credentials: 'include',
-        });
+    const badge = document.getElementById('cart-badge');
 
-        if (!res.ok) throw new Error('Utilisateur non connecté ou panier indisponible');
+    if (isConnected) {
+        try {
+            const res = await fetch('http://localhost:3000/api/basket', {
+                credentials: 'include',
+            });
 
-        const basket = await res.json();
+            if (!res.ok) {
+                badge.classList.add('d-none');
+                return;
+            }
 
-        const totalItems = basket.BasketItems.reduce((sum, item) => sum + item.quantity, 0);
-
-        const badge = document.getElementById('cart-badge');
+            const basket = await res.json();
+            const totalItems = basket.BasketItems.reduce((sum, item) => sum + item.quantity, 0);
+            console.log(totalItems);
+            console.log(badge);
+            badge.textContent = totalItems;
+            badge.classList.remove('d-none');
+        } catch (err) {
+            badge.classList.add('d-none');
+        }
+    } else {
+        const guestBasket = getGuestBasket();
+        const totalItems = guestBasket.reduce((sum, item) => sum + item.quantity, 0);
         badge.textContent = totalItems;
         badge.classList.remove('d-none');
-
-    } catch (err) {
-        console.warn('Badge panier non affiché :', err.message);
-        document.getElementById('cart-badge').classList.add('d-none');
     }
 }
-
-updateCartBadge();
-updateUIForAuth();
 
