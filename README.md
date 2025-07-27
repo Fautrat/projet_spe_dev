@@ -50,7 +50,7 @@ npm install csurf
 
 ## MySQL
 1. brew services start mysql <--- Pour Mac
-1. ysql -u admin -p
+1. mysql -u admin -p
 password : XXXXX
 
 2. USE spe_dev 
