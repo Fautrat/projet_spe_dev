@@ -1,11 +1,11 @@
 
   ## ++ Frontend  ++ 
-  # Installation de Bootstrap
-  npm install bootstrap@5.3.7
+  # Installation des dépendances
+  npm install 
 
   # Démarrer le Frontend
   npm run dev
-  Local:  http://localhost:5173/
+  Local:  http://localhost:VITE_PORT/
 
 
   ## Tester avec Jest de Front  ( tests/product.test.js )
@@ -22,7 +22,7 @@
     },
 
   # Lancer les tests
-  npm test
+  npm run test
 
   ---  Exemple de résultat ---------------
   PASS  tests/product.test.js
@@ -41,12 +41,7 @@
   ## ++ Backend ++
   # Démarrer le Backend
   npm install
-  npm start
-  Server is running on port 3000
-
-  # Installer des modules supplémentaires
-  npm install sequelize
-  npm install csurf
+  npm run start
 
   ## MySQL
   1. brew services start mysql <--- Pour Mac
@@ -61,8 +56,8 @@
 ## Fonctionnalités techniques
 
 - Images stockées dans `back/assets`
-- Protection CSRF
 - Authentification par JWT (`jsonwebtoken`)
+- Protection CSRF intégrée dans le JWT token
 - Mots de passe hashés avec `bcrypt`
 - Panier hors connexion via `localStorage`
 - Création automatique des tables avec Sequelize

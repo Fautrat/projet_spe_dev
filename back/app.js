@@ -3,6 +3,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config({ path: '../.env' });
 const csrfMiddleware = require('./middlewares/csrf-middleware');
 const jwt = require('jsonwebtoken');
@@ -34,6 +35,15 @@ app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 
 // permet de rendre le dossier assets accessible côté front
+if (!fs.existsSync('/assets')) {
+  fs.mkdir(path.join(__dirname, 'assets'), (err) => {
+    if (err) {
+      console.error('Error creating assets directory:', err);
+    } else {
+      console.log('Assets directory created successfully.');
+    }
+  });
+}
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 app.use('/api/products', csrfMiddleware, productsRoutes);
