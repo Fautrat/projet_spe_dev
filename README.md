@@ -1,15 +1,57 @@
-# projet_spe_dev
-
-## Frontend ##
-1. Installation de Bootstrap
+## ++ Frontend  ++ 
+# Installation de Bootstrap
 npm install bootstrap@5.3.7
 
-2. Démarrer le Frontend
+# Démarrer le Frontend
 npm run dev
 Local:  http://localhost:5173/
 
-## Backend ##
 
-1. Démarrer le Backend 
+## Tester avec Jest de Front  ( tests/product.test.js )
+# Installer Jest
+npm install --save-dev jest
+
+# Ajouter le script dans package.json
+
+"scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "jest". <--- ajouter
+  },
+
+# Lancer les tests
+npm test
+
+---  Exemple de résultat --------------
+ PASS  tests/product.test.js
+  createProductCard
+    ✓ crée une carte produit avec le bon libellé (14 ms)
+  formatPrice
+    ✓ formate le prix avec deux décimales et le symbole euro
+
+Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        0.94 s
+
+----------------------------------------
+
+## ++ Backend ++
+# Démarrer le Backend
 npm install
+npm start
+Server is running on port 3000
 
+# Installer des modules supplémentaires
+npm install sequelize
+npm install csurf
+
+
+## MySQL
+1. brew services start mysql <--- Pour Mac
+1. ysql -u admin -p
+password : XXXXX
+
+2. USE spe_dev 
+3. Connected to MYSQL. dans le back
