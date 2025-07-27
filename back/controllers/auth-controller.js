@@ -12,7 +12,7 @@ module.exports.Register = async(req,res) =>{
     try{
 
         const existingUser = await User.findOne({ where: { email } });
-        if(existingUser) return res.status(400).json({message : "User already in the database"});
+        if(existingUser) return res.status(400).json({message : "L'utilisateur existe déjà"});
 
         const hashedPassword = await bcrypt.hash(password, parseInt(process.env.SALT));
         const newUser = await User.create({

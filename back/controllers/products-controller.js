@@ -70,7 +70,7 @@ module.exports.EditProduct = async (req, res) => {
     if (req.file && product.imagePath) {
       const oldPath = path.join(__dirname, '..', product.imagePath);
       fs.unlink(oldPath, err => {
-        if (err) console.warn('Ancienne image non supprimée :', err.message);
+        if (err) console.warn('old image not deleted :', err.message);
       });
     }
 
@@ -95,7 +95,7 @@ module.exports.DeleteProduct = async (req, res) => {
     if (product.imagePath) {
       const oldPath = path.join(__dirname, '..', product.imagePath);
       fs.unlink(oldPath, err => {
-        if (err) console.warn('Ancienne image non supprimée :', err.message);
+        if (err) console.warn('old image not deleted :', err.message);
       });
     }
 

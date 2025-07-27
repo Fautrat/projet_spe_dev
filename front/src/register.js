@@ -3,80 +3,68 @@ import 'bootstrap';
 
 import { getCSRFToken } from '/src/csrf.js';
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const form = document.getElementById('register-form');
+const getFormValues = () => ({
+  username: document.getElementById('username').value,
+  email: document.getElementById('email').value,
+  password: document.getElementById('password').value,
+});
 
-    // Récupère le token CSRF
-    let csrfToken = '';
-    try {
-        csrfToken = await getCSRFToken();
-        console.log('CSRF Token reçu :', csrfToken);
-    } catch (err) {
-        console.error('Erreur CSRF :', err);
-        alert("Erreur lors de la récupération du token CSRF.");
-        return;
-    }
+const isPasswordValid = (password) =>
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
 
-    // Envoie les données
-    form.addEventListener('submit', async (e) => {
+const registerUser = (user, csrfToken) =>
+  fetch('http://localhost:3000/api/auth', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-csrf-token': csrfToken,
+    },
+    body: JSON.stringify(user),
+  });
+
+const loginUser = (email, password, csrfToken) =>
+  fetch('http://localhost:3000/api/auth/login', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-csrf-token': csrfToken,
+    },
+    body: JSON.stringify({ email, password }),
+  });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('register-form');
+
+  getCSRFToken()
+    .then((csrfToken) => {
+      form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        const username = document.getElementById('username').value;
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+        const { username, email, password } = getFormValues();
 
-        // Vérification du mot de passe
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-        if (!passwordRegex.test(password)) {
-            alert("Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un symbole.");
-            return;
-        }
+        return isPasswordValid(password) ?
+            registerUser({ username, email, password }, csrfToken)
+              .then((res) => res.json().then((data) => ({ res, data })))
+              .then(({ res, data }) => {
+                if (!res.ok) throw new Error(data.message);
 
-        try {
-            const res = await fetch('http://localhost:3000/api/auth', {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-csrf-token': csrfToken
-                },
-                body: JSON.stringify({
-                    username,
-                    email,
-                    password
-                })
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                const res = await fetch('http://localhost:3000/api/auth/login', {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-csrf-token': csrfToken
-                },
-                body: JSON.stringify({
-                    email,
-                    password
-                })
-                });
-
-                if (res.ok) {
+                return loginUser(email, password, csrfToken)
+                  .then((res) => res.json().then((data) => ({ res, data })))
+                  .then(({ res, data }) => {
+                    if (!res.ok) throw new Error(data.message);
                     alert('Connexion réussie !');
                     window.location.href = 'index.html';
-                } else {
-                    const error = await res.json();
-                    alert('Erreur : ' + error.message);
-                }
-            } else {
-                console.error('Erreur serveur :', data);
-                alert('Erreur : ' + data.message);
-            }
-        } catch (error) {
-            console.error('Erreur fetch :', error);
-            alert('Erreur réseau ou serveur.');
-        }
+                  });
+              })
+          : Promise.reject(
+              new Error("Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un symbole.")
+            );
+      });
+    })
+    .catch((err) => {
+      console.error('Erreur :', err.message);
+      alert(err.message.includes('CSRF') ? 'Erreur lors de la récupération du token CSRF.' : err.message);
     });
 });

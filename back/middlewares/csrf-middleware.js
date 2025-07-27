@@ -19,7 +19,6 @@ function CSRF(req, res, next) {
     try {
         console.log(csrfToken);
         const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET);
-        console.log(csrfToken);
         console.log(decoded.csrfSecret);
         const valid = tokens.verify(decoded.csrfSecret, csrfToken);
 

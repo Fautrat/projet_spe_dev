@@ -48,11 +48,32 @@
   npm install sequelize
   npm install csurf
 
-
   ## MySQL
   1. brew services start mysql <--- Pour Mac
   1. mysql -u admin -p
   password : XXXXX
 
-  2. USE spe_dev 
+  2. USE spe_dev
   3. Connected to MYSQL. dans le back
+
+  -----------------------------------------
+
+## Fonctionnalités techniques
+
+- Images stockées dans `back/assets`
+- Protection CSRF
+- Authentification par JWT (`jsonwebtoken`)
+- Mots de passe hashés avec `bcrypt`
+- Panier hors connexion via `localStorage`
+- Création automatique des tables avec Sequelize
+- CSP dans `vite.config.js` : scripts locaux uniquement
+- Route des stats dispo sur `http://localhost:3000/statistiques`
+
+## Fichier de sécurité
+
+Un fichier `.well-known/security.txt` est présent pour déclarer les contacts de sécurité.
+localhost:VITE_PORT/.well-known/security.txt
+
+## SCRIPT
+
+- Un fichier script.sql est à disposition afin de créer les premiers produits.
